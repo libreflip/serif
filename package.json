@@ -1,9 +1,9 @@
 {
   "name": "serif",
   "version": "0.0.0",
-  "description": "Small description for serif goes here",
-  "license": "MIT",
-  "author": "",
+  "description": "Web frontend for the Libreflip automatic bookscanner",
+  "license": "MIT/X11",
+  "author": "Katharina 'spacekookie' Fey <kookie@spacekookie.de>",
   "directories": {
     "doc": "doc",
     "test": "tests"
