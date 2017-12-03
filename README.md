@@ -6,7 +6,7 @@ Libreflip web frontend; written in Javascript.
 
 * `git clone https://github.com/libeflip/serif` this repository
 * `cd serif`
-* `npm install`
+* `yarn install`
 
 ## Running / Development
 
