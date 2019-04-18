@@ -863,6 +863,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.47.tgz#655b4a1cc52c8ab08f48cc055061990d6846bc97"
   integrity sha512-56wEJWXZs+3XXoTe/OCpdZ6czrONhy+6hT0GdPOb7HvudLTMJ1T5tuZPs37K5cPR5t+J9+vLPFDQgUQ8NWJE1w==
 
+"@typopro/web-source-sans-pro@^3.7.5":
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/@typopro/web-source-sans-pro/-/web-source-sans-pro-3.7.5.tgz#e9e0862ebfbb85acddaa3468a6c5667e0b855567"
+  integrity sha512-F+oOm21fFmkqed/VafVYAmRSLZy88iD5JWoTXpUhaoo2X2I12w9azIdmoE+3IuiCo5geCkvMOAEKTNxLzEJOkw==
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -6437,6 +6442,11 @@ normalize-url@2.0.1:
     prepend-http "^2.0.0"
     query-string "^5.0.1"
     sort-keys "^2.0.0"
+
+normalize.css@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/normalize.css/-/normalize.css-8.0.1.tgz#9b98a208738b9cc2634caacbc42d131c97487bf3"
+  integrity sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==
 
 npm-bundled@^1.0.1:
   version "1.0.6"

@@ -1,0 +1,46 @@
+:root {
+  font-family: "TypoPRO Source Sans Pro";
+  font-size: 20px;
+  background-color: #807877;
+  transform: translate(100vw, 0%)rotate(90deg);
+  transform-origin: 0 0;
+  width: 100vh;
+  height: 100vw;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+/* body {
+  transform: translate(100vw, 0%)rotate(90deg);
+  transform-origin: 0 0;
+  width: 100vh;
+  height: 100vw;
+} */
+
+button {
+  background: #DE7946;
+  color: white;
+  text-shadow: 0 0 2px black;
+  border: 1px solid #807877;
+  border-radius: 2px;
+  height: 3rem;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+  width: 100px;
+  outline: none;
+}
+
+button:active, button:hover, button:focus {
+  outline: none !important;
+  /* box-shadow: 0 0 2px 0px #333; */
+}
+
+input {
+  border: 1px solid #807877;
+  border-radius: 2px;
+  /* height: 3rem; */
+}
+
+input:active, input:hover, input:focus {
+  outline: none !important;
+}
