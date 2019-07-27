@@ -1,0 +1,14 @@
+<article class="tutorial-step">
+  <h3>{{@step.title}}</h3>
+  <div>
+    {{@step.text}}
+  </div>
+  <div class="tutorial-image">
+    <img src={{@step.image}} alt="">
+  </div>
+  <div>
+    {{#if @step.hasInput}}
+      {{input value="123"}}
+    {{/if}}
+  </div>
+</article>
