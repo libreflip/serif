@@ -1,10 +1,11 @@
 <article class="tutorial-step">
   <h3>{{@step.title}}</h3>
-  <div>
+  <div class="tutorial-text">
     {{@step.text}}
   </div>
   <div class="tutorial-image">
     <img src={{@step.image}} alt="">
+    {{yield}}
   </div>
   <div>
     {{#if @step.hasInput}}
