@@ -50,8 +50,3 @@ input {
 input:active, input:hover, input:focus {
   outline: none !important;
 }
-
-.tutorial-image: {
-  width: 100px;
-  border: 10px solid red;
-}
