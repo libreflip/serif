@@ -39,6 +39,7 @@
     "ember-cli-uglify": "^2.1.0",
     "ember-css-modules": "^1.2.0",
     "ember-data": "~3.9.0",
+    "ember-debug-logger": "^2.1.1",
     "ember-export-application-global": "^2.0.0",
     "ember-hammertime": "^1.2.4",
     "ember-load-initializers": "^1.1.0",

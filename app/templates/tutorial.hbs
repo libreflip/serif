@@ -1,0 +1,14 @@
+<div>
+  {{#each this.model as |step|}}
+    {{#if (eq step.index this.currentIndex)}}
+      <TutorialStep @step = {{step}}/>
+    {{/if}}
+  {{/each}}
+  {{#if (lt this.currentIndex this.finalIndex)}}
+    <p><button {{action "next"}}>Next</button></p>
+  {{else}}
+    <p><button >Done</button></p>
+  {{/if}}
+</div>
+
+{{outlet}}
