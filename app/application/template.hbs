@@ -2,47 +2,16 @@
   <img local-class="logo" src="/logo-transparent-300x122.png" aria-hidden="true">
 </div>
 <div local-class="container">
-  {{#if (eq step "")}}
-    <form local-class="form">
-      <label>Title</label>
-      <Inp />
-
-      <label>Author</label>
-      <Inp />
-
-      <label>ISBN</label>
-      <Inp />
-      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />      <label>ISBN</label>
-      <Inp />
-
-      <button type="submit">Weiter</button>
-    </form>
-  {{/if}}
+  <div class="menu">
+    <div class="links">
+      {{#link-to "tutorial" class="menu-about"}}
+        start
+      {{/link-to}}
+    </div>
+  </div>
+</div>
+<div local-class="container">
+  <div class="body">
+    {{outlet}}
+  </div>
 </div>
