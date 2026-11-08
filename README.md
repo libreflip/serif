@@ -1,56 +1,34 @@
-![Libreflip serif](serif.png)
+# serif
 
-Libreflip web frontend; written in Javascript.
+The VM-hosted backend/frontend application for Libreflip's post-scan
+pipeline: receives uploaded scan jobs from [`sans`](https://github.com/libreflip/sans)
+(the book-scanning machine's own software), hosts the web portal users
+reach via the QR code shown on the machine after a scan, and will
+eventually run the post-processing pipeline (image correction, OCR,
+eBook assembly).
 
-## Prerequisites
+**Status: not implemented yet.** This repository previously held a
+2019-era Ember.js prototype (a 4-step onboarding tutorial, no actual
+backend wiring) — that's gone now, but still fully recoverable from
+this repo's git history if ever needed. Nothing about the current
+plan reuses it; `serif`'s actual implementation language and
+architecture aren't decided yet.
 
-You will need the following things properly installed on your computer.
+## Where the planning lives
 
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with npm)
-* [Ember CLI](https://ember-cli.com/)
-* [Google Chrome](https://google.com/chrome/)
+`serif`'s requirements are tracked outside this repo for now, across:
 
-## Installation
+- Open GitHub issues here and in
+  [`libreflip/sans`](https://github.com/libreflip/sans/issues) (search
+  for `MVP-` prefixed titles — tickets are numbered across both repos
+  as part of one shared set).
+- A compiled feature inventory covering everything currently known or
+  still undecided about `serif` — infrastructure, target-state feature
+  list, and the concrete requirements already locked in by `sans`-side
+  tickets (upload payload shape, job ID format, QR-code URL scheme,
+  etc.). Not yet published in this repo; ask the project maintainer
+  (ijon) for the current copy if you need it before it's mirrored here.
 
-* `git clone https://github.com/libeflip/serif` this repository
-* `cd serif`
-* `yarn install`
+## License
 
-## Running / Development
-
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-* Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
-
-### Code Generators
-
-Make use of the many generators for code, try `ember help generate` for more details
-
-### Running Tests
-
-* `ember test`
-* `ember test --server`
-
-### Linting
-
-* `npm run lint:hbs`
-* `npm run lint:js`
-* `npm run lint:js -- --fix`
-
-### Building
-
-* `ember build` (development)
-* `ember build --environment production` (production)
-
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-* [ember.js](https://emberjs.com/)
-* [ember-cli](https://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+MIT, see `LICENSE`.
