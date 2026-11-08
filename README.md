@@ -22,12 +22,12 @@ architecture aren't decided yet.
   [`libreflip/sans`](https://github.com/libreflip/sans/issues) (search
   for `MVP-` prefixed titles — tickets are numbered across both repos
   as part of one shared set).
-- A compiled feature inventory covering everything currently known or
-  still undecided about `serif` — infrastructure, target-state feature
-  list, and the concrete requirements already locked in by `sans`-side
+- [`docs/feature-inventory.md`](docs/feature-inventory.md) — a compiled
+  feature inventory covering everything currently known or still
+  undecided about `serif`: infrastructure, target-state feature list,
+  and the concrete requirements already locked in by `sans`-side
   tickets (upload payload shape, job ID format, QR-code URL scheme,
-  etc.). Not yet published in this repo; ask the project maintainer
-  (ijon) for the current copy if you need it before it's mirrored here.
+  etc.).
 
 ## License
 
