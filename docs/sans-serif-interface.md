@@ -680,5 +680,5 @@ item only.
 
 - **sans:** see `libreflip/sans` `docs/serif-client.md` and the issues
   linked there (libreflip/sans#77, #78, #79, plus #47–#56).
-- **serif:** implemented in c-base_book-scanner. Its ticket set is tracked (libreflip/serif#38)
-  in the `libreflip/serif` tracking issue for this interface.
+- **serif:** implemented in c-base_book-scanner. Its ticket set is tracked
+  in libreflip/serif#38.
