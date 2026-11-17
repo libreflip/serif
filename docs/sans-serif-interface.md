@@ -679,6 +679,6 @@ item only.
 ## 11. Implementation tickets
 
 - **sans:** see `libreflip/sans` `docs/serif-client.md` and the issues
-  linked there.
-- **serif:** implemented in c-base_book-scanner. Its ticket set is tracked
+  linked there (libreflip/sans#77, #78, #79, plus #47–#56).
+- **serif:** implemented in c-base_book-scanner. Its ticket set is tracked (libreflip/serif#38)
   in the `libreflip/serif` tracking issue for this interface.
