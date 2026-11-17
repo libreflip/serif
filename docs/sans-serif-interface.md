@@ -64,8 +64,11 @@ Smaller inconsistencies, resolved without changing anyone's intent:
   code's format is canonical** (§4.1).
 - **Log name.** MVPrototype writes `pressure-log.jsonl` (sans#20/#27).
   MVProduct renames it to `scan.jsonl` (sans#48). c-base_book-scanner#7 and
-  PR #113 say `scan.log`. **`scan.jsonl` is canonical**, and serif stores it
-  under that name.
+  PR #113 say `scan.log`. All three are the same file: the JSON Lines log
+  the scanner writes while scanning. **`scan.jsonl` is canonical** everywhere
+  (harmonised 2026-11-17: libreflip/sans#81, SasquatchPDX/c-base_book-scanner#134,
+  libreflip/md-pile docs). Every line carries a `type`; Capture attempts are
+  `"attempt"`.
 - **Data model.** The `metadata.json` model in `rescan-flow.md` §5 is
   superseded by `metadata.opf` plus `scan.jsonl` (sans#48).
 - **No writes to storage.** c-base_book-scanner#7 says the scanner "produces
