@@ -646,11 +646,11 @@ item only.
 - **Portal.** Scans in `captured` are listed under "Raw scans", with title
   from the OPF, page count, completeness flags and open rescans. They are
   absent from library browse, search and download.
-- **Observability.** Prometheus counters:
-  - `scanner_api_requests_total{endpoint,status}`
-  - `scanner_bytes_received_total`
-  - `scanner_jobs{state}`
-  - `scanner_last_seen_timestamp{scanner_id}`
+- **Observability.** Logs only: serif logs each device-API request (route,
+  status, job ID, never the key). No Prometheus metrics, Grafana panels or
+  alerts for the device API. With a single scanner that is overkill, and
+  the scanner's own idle-screen status line (§8.3) already shows upload
+  problems to the person at the machine (decided 2026-11-17).
 
 ## 10. End-to-end acceptance (both sides together)
 
