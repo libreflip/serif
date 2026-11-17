@@ -50,7 +50,7 @@ what c-base_book-scanner had built. Each was decided by ijon on 2026-11-17.
 | D6 | Scan lifecycle on serif | An uploaded scan is a **raw scan** (`captured`). It becomes a library book only after serif's post-processing (ScanTailor-Web) and an explicit finish. A raw scan never appears in the library. |
 | D7 | Rescan storage | serif's model applies: a replacement creates a **new page version** and keeps the old one. Rescan requests are `ScanTodo` rows in the database, and the stable page identity is the `sequence_number`. serif also appends `rescan_flag` and `rescan_replace` events to the job's `scan.jsonl`, so the sans#48 log contract holds. Rescans are allowed while a scan is `captured`, and also after it is `complete`. |
 | D8 | Configuration | serif: environment variables (`BOOK_SCANNER_*`). sans: the Machine profile (`sans.toml`), following sans's own convention. |
-| D9 | Authentication | Per-device API key, sent as `Authorization: Bearer`. No user session, cookie or CSRF on the scanner API. |
+| D9 | Authentication | **One** API key for the one scanner, sent as `Authorization: Bearer`. serif keeps only its SHA-256 in an environment variable. There is no device registry: there will only ever be one scanner (decided 2026-11-17). No user session, cookie or CSRF on the scanner API. |
 | D10 | Transport security | HTTPS with **TLS 1.3 only**. Certificates come from an internal CA or are self-signed, and sans verifies them against a configured CA file. Nothing beyond that. |
 | D11 | Portal access | The QR code's target needs the normal serif login (LDAP or local), like every other portal page. After login the user lands on the job page. |
 | D12 | Direction | **sans always initiates.** serif never connects to sans. sans needs serif's address; serif needs no address for sans. |
@@ -107,10 +107,12 @@ Smaller inconsistencies, resolved without changing anyone's intent:
   `serif.c-base.lan`), issued by a small internal CA or self-signed. sans
   verifies the chain against the CA file in its profile and checks the host
   name. sans has no "skip verification" option.
-- **API keys.** Each scanner device has its own key: 32 random bytes,
-  base64url-encoded without padding. serif stores only its SHA-256 hash.
-  A high-entropy key needs no slow hash. Keys are created, rotated and
-  revoked with a management command (§7.2), never through LDAP. A key only
+- **API key.** There is exactly one scanner and one key: 32 random bytes,
+  base64url-encoded without padding. serif stores only its SHA-256 hash in
+  `BOOK_SCANNER_SCANNER_API_KEY_SHA256` (§7.2); a high-entropy key needs no
+  slow hash. Rotation means generating a new key, setting the variable,
+  restarting serif and replacing the key file on sans. LDAP is not involved.
+  An empty variable disables the device API. The key only
   authorises `/api/scanner/v1/`. It cannot reach library, review, admin or
   portal routes, and a session cookie cannot reach `/api/scanner/v1/`.
 - **Clock.** serif (or the c-base NTP server) provides NTP to the LAN. sans
@@ -137,12 +139,11 @@ job_id = YYYYMMDDTHHMMSSZ [ "-" N ]     regex: ^[0-9]{8}T[0-9]{6}Z(-[1-9][0-9]{0
   override.
 - The ID is immutable. It is never derived from title or ISBN, and never
   reused.
-- serif treats it as an opaque string. A job ID first registered by device A
-  belongs to device A. Any registration of the same ID with a different
-  `scan_started_at` or by another device is `409 job_id_conflict`.
-- **Limitation:** the format assumes one scanner per serif. A second scanner
-  would need a per-device prefix. That is a v2 contract change, not covered
-  here.
+- serif treats it as an opaque string. Registering an ID that already
+  exists with a different `scan_started_at`, or as a web-created job, is
+  `409 job_id_conflict`.
+- **Scope:** there will only ever be one scanner. The ID format, the single
+  key and the absence of any device registry all rely on that.
 
 ### 4.2 Pages
 
@@ -262,8 +263,8 @@ Calibre-style OPF 2.0, as specified in sans#48. Per D3 it is authoritative:
   fields, new endpoints, new event types. Anything else is `v2` under a new
   path. Clients ignore unknown response fields.
 - `{job_id}` must match §4.1. Otherwise the answer is `400 invalid_job_id`.
-  A job that belongs to another device is `404`, not `403`, so that job IDs
-  cannot be probed.
+  A web-created job (not registered through `PUT jobs/{job_id}`) is `404`
+  on the device API.
 
 ### 6.2 `GET ping`
 
@@ -273,7 +274,7 @@ each upload run and while idle (§8).
 `200`:
 
 ```json
-{"api_version": 1, "scanner_id": "libreflip-01", "server_time": "2026-11-17T18:02:11Z",
+{"api_version": 1, "server_time": "2026-11-17T18:02:11Z",
  "limits": {"max_image_bytes": 52428800, "max_opf_bytes": 1048576,
             "max_event_batch_bytes": 1048576, "max_event_batch_lines": 1000}}
 ```
@@ -295,8 +296,8 @@ Request:
 | Status | Meaning |
 |---|---|
 | `201` | Created (`open`) |
-| `200` | Already registered by this device with the same `scan_started_at` |
-| `409 job_id_conflict` | The ID exists with other data or for another device. sans stops uploading this job and shows "Upload blocked: job ID conflict, contact a maintainer". The fix is a documented maintenance procedure (sans side), not automatic. |
+| `200` | Already registered with the same `scan_started_at` |
+| `409 job_id_conflict` | The ID exists with other data, or as a web-created job. sans stops uploading this job and shows "Upload blocked: job ID conflict, contact a maintainer". The fix is a documented maintenance procedure (sans side), not automatic. |
 
 Response (also for `GET jobs/{job_id}`): see §6.4.
 
@@ -402,7 +403,7 @@ Abort Book on sans. Moves the job to `cancelled`. Uploaded data is kept
 
 ### 6.11 Rescan (v2 flow, sans#54)
 
-**`GET rescans`**: jobs of this device with at least one open rescan todo, in
+**`GET rescans`**: scanner jobs with at least one open rescan todo, in
 any state except `cancelled` (sans#55):
 
 ```json
@@ -497,7 +498,7 @@ automatically.
 url = "https://serif.c-base.lan/"
 # QR code = portal_job_url_prefix + job_id (sans#52).
 portal_job_url_prefix = "https://serif.c-base.lan/j/"
-# File holding this device's API key (one line). Must be readable only by the
+# File holding the scanner's API key (one line). Must be readable only by the
 # sans user (mode 0600); sans refuses to start uploads otherwise.
 api_key_file = "/home/pi/.config/sans/serif-api-key"
 # CA certificate (PEM) that signed serif's certificate.
@@ -517,22 +518,25 @@ without leaking it. Adding the table changes the profile schema
 | Variable | Meaning |
 |---|---|
 | `BOOK_SCANNER_PUBLIC_BASE_URL` | Required in production. Example: `https://serif.c-base.lan/`. Used to build `portal_url` in API responses and the `/j/` links. |
-| `BOOK_SCANNER_SCANNER_API_ENABLED` | `true` by default. `false` answers `503` on `/api/scanner/v1/`. |
 | `BOOK_SCANNER_SCANNER_MAX_IMAGE_BYTES` | Default 52428800. |
 | `BOOK_SCANNER_SCANNER_MAX_OPF_BYTES` | Default 1048576. |
 
 The existing `BOOK_SCANNER_MAX_UPLOAD_BYTES`, `ALLOWED_HOSTS`, TLS and HSTS
 settings stay as they are.
 
-Device keys are records, not environment variables (they need rotation and
-revocation, as c-base_book-scanner Sprint020 H already requires):
+The scanner key is configured here too, as a hash:
 
-```
-manage.py scanner_device create <scanner_id> [--name "libreflip at c-base"]   # prints key once
-manage.py scanner_device rotate <scanner_id>    # new key, old one invalid immediately
-manage.py scanner_device revoke <scanner_id>
-manage.py scanner_device list
-```
+| Variable | Meaning |
+|---|---|
+| `BOOK_SCANNER_SCANNER_API_KEY_SHA256` | Lowercase hex SHA-256 of the scanner's key. Empty (default) disables the device API (`503`). The key itself is never stored on serif. |
+
+Generate a key and its hash with `manage.py generate_scanner_key`. It writes
+nothing; it only prints the key (put it into sans's `api_key_file`) and the
+line `BOOK_SCANNER_SCANNER_API_KEY_SHA256=<hex>` for serif's environment.
+To rotate: generate a new key, set the variable, restart serif, replace the
+key file on sans. The old key stops working with the restart. This replaces
+the device registry Sprint020 H proposed: with one scanner there is nothing
+to register, revoke individually or tell apart.
 
 ## 8. Behaviour on sans
 
@@ -627,7 +631,7 @@ item only.
 
 ## 9. Behaviour on serif
 
-- **Routes.** New `/api/scanner/v1/…` (§6), device auth only, CSRF-exempt
+- **Routes.** New `/api/scanner/v1/…` (§6), scanner-key auth only, CSRF-exempt
   because there are no cookies. New portal route `/j/<job_id>`: login
   required, redirects to `/scan/jobs/<job_id>/workspace/`. Existing
   `<uuid:job_id>` routes accept both ID formats (a path converter matching
@@ -636,13 +640,13 @@ item only.
   A migration converts existing UUIDs to their string form, including every
   foreign key (`ScanPage`, `ScanTodo`, `ScanTailorStageState`, review and
   processing tables) and `scan_job_id` values inside JSON detail fields.
-  Web-created jobs get `str(uuid4())`. New: `ScannerDevice`, job fields
+  Web-created jobs get `str(uuid4())`. New: a flag marking scanner jobs (`ScanJob.source = scanner|web`), job fields
   `scan_started_at`, `page_width_mm`, `page_number_crop`, completeness
   flags, state `captured`; versioned scan covers; versioned OPF; stored
   event lines (`origin`, `line_no`, raw text, received_at).
-- **Attribution.** A device-uploaded version has `uploader = NULL` and
-  `device = <ScannerDevice>`. The device's jobs have `operator = NULL`;
-  sans has no user login.
+- **Attribution.** A version uploaded through the device API has
+  `uploader = NULL` and is marked as uploaded by the scanner. Scanner jobs
+  have `operator = NULL`; sans has no user login.
 - **Portal.** Scans in `captured` are listed under "Raw scans", with title
   from the OPF, page count, completeness flags and open rescans. They are
   absent from library browse, search and download.
@@ -666,9 +670,9 @@ item only.
 4. **Retention.** Fill `data_root` until free space is below the required
    amount. Starting a new book deletes only the oldest confirmed job,
    silently. An unconfirmed job is never deleted.
-5. **Auth and TLS.** A revoked key gives the "rejects key" status and no
+5. **Auth and TLS.** A replaced (old) key gives the "rejects key" status and no
    data loss. A wrong CA file gives "certificate not trusted". A session
-   cookie cannot reach `/api/scanner/v1/`, and the device key cannot reach
+   cookie cannot reach `/api/scanner/v1/`, and the scanner key cannot reach
    `/library/`. A TLS 1.2-only client cannot connect.
 6. **Clock.** With NTP unsynchronised, sans refuses to start a book.
    Registering an existing job ID with another `scan_started_at` returns
